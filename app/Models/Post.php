@@ -19,4 +19,9 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function isPublished()
+    {
+        return ( $this->published_at !== null && $this->published_at <= now() );
+    }
 }
