@@ -18,6 +18,10 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
+        if (!$post->isPublished()) {
+            abort(404);
+        }
+
         return view('posts.show', compact('post'));
     }
 }
