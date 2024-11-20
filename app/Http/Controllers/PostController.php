@@ -11,7 +11,12 @@ class PostController extends Controller
     {
         $posts = Post::when($user, function ($query) use ($user) {
             $query->where('user_id', $user->id);
-        })->paginate(12);
+        })
+        ->whereNotNull('image') // Do not show posts without image in the list
+        ->whereNotNull('published_at') // Do not show posts without published date in the list
+        ->where('published_at', '<=', now()) // Do not show posts that are scheduled to be published in the future
+        ->orderBy('published_at', 'desc')
+        ->paginate(12);
 
         return view('posts.index', compact('posts'));
     }
