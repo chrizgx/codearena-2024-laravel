@@ -22,3 +22,6 @@ Route::get('/promoted', [PostController::class, 'index'])
 
 Route::post('/comment', [CommentController::class, 'store'])
     ->name('comment');
+
+Route::delete('/comment/{comment}', [CommentController::class, 'delete'])
+    ->name('comment.delete');

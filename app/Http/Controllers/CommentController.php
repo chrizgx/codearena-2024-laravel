@@ -38,4 +38,11 @@ class CommentController extends Controller
 
         return redirect()->route('post', ['post' => $post->slug]);
     }
+
+    public function delete(Comment $comment)
+    {
+        $comment->delete();
+
+        return redirect()->route('post', ['post' => $comment->post->slug]);
+    }
 }

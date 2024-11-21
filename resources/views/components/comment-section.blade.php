@@ -3,12 +3,17 @@
         <h3 class="">Comments</h3>
         <div class="flex flex-col gap-1 mx-auto mt-10 mb-6">
             @foreach ($comments as $comment)
-                <div class="p-4 px-6 bg-gradient-to-r from-purple-transparent-start to-purple-transparent-end rounded-3xl">
+                <div class="group p-4 px-6 bg-gradient-to-r from-purple-transparent-start to-purple-transparent-end rounded-3xl">
                     <div class="flex items-center gap-4 mb-2">
                         <div class="w-7 h-7 rounded-full bg-gradient-to-r from-purple-start to-purple-end bg-opacity-10"></div>
                         <p class="">{{$comment->name}}</p>
+                        <p class="-ml-2 text-xs text-gray-600">{{$comment->created_at->diffForHumans()}}</p>
                         <span class="grow"></span>
-                        <p class="text-xs text-gray-600">{{$comment->created_at->diffForHumans()}}</p>
+                        <form action="{{ route('comment.delete', $comment) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all">Delete</button>
+                        </form>
                     </div>
                     <p class="ml-12 text-gray-700 font-light">{{$comment->body}}</p>
                 </div>
