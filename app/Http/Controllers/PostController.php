@@ -18,7 +18,22 @@ class PostController extends Controller
         ->orderBy('published_at', 'desc')
         ->paginate(12);
 
-        return view('posts.index', compact('posts'));
+        $authors = User::whereHas('posts', function ($query) {
+            $query->whereNotNull('published_at')
+            ->where('published_at', '<=', now());
+        })
+        ->with(['posts' => function ($query) {
+            $query->whereNotNull('published_at')
+                ->where('published_at', '<=', now())
+                ->orderBy('published_at', 'asc');
+        }])
+        ->get()
+        ->sortBy(function ($author) {
+            return $author->posts->first()->published_at;
+        })
+        ->take(3);
+
+        return view('posts.index', compact('posts', 'authors'));
     }
 
     public function show(Post $post)

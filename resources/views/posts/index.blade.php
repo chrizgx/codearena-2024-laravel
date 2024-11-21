@@ -15,6 +15,19 @@
         <div class="mt-10">
           {{ $posts->links() }}
         </div>
+        <!-- Authors who have authored posts -->
+        @unless($authors === null)
+          <section id="authors" class="mt-10 max-w-2xl">
+            <h3>Discover authors</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-20 mx-auto lg:mx-0 ">
+              @foreach ($authors as $author)
+                @unless($author === null)
+                  <p>{{$author->name}}</p>
+                @endunless
+              @endforeach
+            </div>
+          </section>
+        @endunless
       @else
         <p class="mt-8 mx-auto text-center text-gray-500">No posts found.</p>
       @endif
