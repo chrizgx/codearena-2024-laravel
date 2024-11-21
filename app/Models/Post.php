@@ -24,4 +24,9 @@ class Post extends Model
     {
         return ( $this->published_at !== null && $this->published_at <= now() );
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
