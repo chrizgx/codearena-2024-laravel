@@ -6,6 +6,11 @@
     <div class="max-w-xl">
       <div class="mt-8 flex items-center gap-x-4 text-xs">
         <time datetime="2020-03-16" class="text-gray-500">{{ $post->created_at->format("d M Y") }}</time>
+        @if ($post->promoted)
+           <span class="p-1 rounded-full bg-yellow-100 bg-opacity-30">
+             <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-start to-yellow-end bg-clip-text text-transparent">Promoted</span>
+           </span>
+        @endif
       </div>
       <div class="group relative">
         <h3 class="mt-3 text-lg/6 font-semibold text-gray-900 group-hover:text-gray-600">
@@ -19,7 +24,7 @@
       <div class="relative mt-8 flex items-center gap-x-4">
         <div class="text-sm/6">
           <!-- <p class="font-semibold text-gray-900"> -->
-            <a href="{{ route('author', $post->author) }}" class="flex gap-2 items-center font-semibold">
+            <a href="{{ route('author', $post->author) }}" class="flex gap-2 items-center text-gray-700 font-semibold">
               <div class="w-10 h-10 bg-gradient-to-r from-purple-start to-purple-end border-none border-gray-200 rounded-full shadow-2xl"></div>
               {{ $post->author->name }}
             </a>
