@@ -23,6 +23,7 @@ class PostFactory extends Factory
             'body' => $this->faker->paragraph(10),
             'slug' => $this->faker->slug(),
             'published_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
+            'promoted' => $this->faker->boolean(2), // 2% chance of being promoted
         ];
     }
 }
