@@ -18,5 +18,8 @@
                 By {{ $post->author->name }}
             </div>
         </div>
+        <div class="mt-16">
+            <x-comment-section :comments="$post->comments" :post="$post" />
+        </div>
     </div>
 @endsection

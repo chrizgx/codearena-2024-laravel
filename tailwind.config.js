@@ -16,7 +16,9 @@ export default {
             },
             colors: {
                 'purple-start': '#7f00ff',
+                'purple-transparent-start': '#7f00ff11',
                 'purple-end': '#e100ff',
+                'purple-transparent-end': '#e100ff11',
                 'yellow-start': '#F7971E',
                 'yellow-end': '#FFD200',
             },
