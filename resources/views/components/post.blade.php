@@ -18,12 +18,12 @@
       </div>
       <div class="relative mt-8 flex items-center gap-x-4">
         <div class="text-sm/6">
-          <p class="font-semibold text-gray-900">
-            <a href="#">
-              <span class="absolute inset-0"></span>
+          <!-- <p class="font-semibold text-gray-900"> -->
+            <a href="{{ route('author', $post->author) }}" class="flex gap-2 items-center font-semibold">
+              <div class="w-10 h-10 bg-gradient-to-r from-purple-start to-purple-end border-none border-gray-200 rounded-full shadow-2xl"></div>
               {{ $post->author->name }}
             </a>
-          </p>
+          <!-- </p> -->
         </div>
       </div>
     </div>
