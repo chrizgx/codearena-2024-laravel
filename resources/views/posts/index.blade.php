@@ -17,12 +17,15 @@
         </div>
         <!-- Authors who have authored posts -->
         @unless($authors === null)
-          <section id="authors" class="mt-10 max-w-2xl">
-            <h3>Discover authors</h3>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-20 mx-auto lg:mx-0 ">
+          <section id="authors" class="mx-auto mt-10 max-w-2xl lg:max-w-none">
+            <h3 class="mb-8 text-xl text-center text-gray-900 font-bold" >Discover authors</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-5 mx-auto lg:mx-0 ">
               @foreach ($authors as $author)
                 @unless($author === null)
-                  <p>{{$author->name}}</p>
+                  <a href="{{ route('author', $author) }}" class="flex gap-4 items-center w-full p-6 rounded-2xl bg-gray-200">
+                    <div class="w-10 h-10 bg-gradient-to-r from-purple-start to-purple-end border-none border-gray-200 rounded-full shadow-2xl"></div>
+                    <p>{{$author->name}}</p>
+                  </a>
                 @endunless
               @endforeach
             </div>
