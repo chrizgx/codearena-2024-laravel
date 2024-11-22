@@ -54,9 +54,8 @@
         <p class="mt-8 mx-auto text-center text-gray-500">Be the first to comment...</p>
     @endif
 
-    <form id="reply-template" class="mt-3 hidden" action="{{ route('comment') }}" method="POST">
+    <form id="reply-template" class="mt-3 hidden" action="{{ route('comment', ['post' => $post->id]) }}" method="POST">
         @csrf
-        <input type="hidden" name="post_id" value=""> <!-- dynamically set by js -> value = $post->id -->
         <input type="hidden" name="parent_id" value=""> <!-- dynamically set by js -> value = $comment->id -->
         <input type="hidden" name="reference_id" value="">
         <input type="text" name="name" placeholder="Name..." class="w-full p-2 pl-4 border border-gray-200 rounded-xl" required>
@@ -66,9 +65,8 @@
     </form>
 
     <div>
-        <form id="comment-form" action="{{ route('comment') }}" method="POST">
+        <form id="comment-form" action="{{ route('comment', ['post' => $post->id]) }}" method="POST">
             @csrf
-            <input type="hidden" name="post_id" value="{{ $post->id }}">
             <input type="text" id="name" required name="name" placeholder="Name..." class="w-full p-2 pl-4 border border-gray-200 rounded-xl">
             <textarea name="body" id="body" required class="w-full p-4 mt-2 border border-gray-200 rounded-xl" placeholder="Add a comment..."></textarea>
             <button type="submit" class="mt-4 px-6 py-2 text-white bg-gradient-to-r from-purple-start to-purple-end rounded-xl">Post Comment</button>
@@ -88,7 +86,6 @@
         form.querySelector('button[type="cancel"]').onclick = () => hideReplyForm(referenceId);
 
         // Set up form data
-        form.querySelector('input[name="post_id"]').value = {{$post->id}};
         form.querySelector('input[name="parent_id"]').value = commentId;
         form.querySelector('input[name="reference_id"]').value = referenceId;
 

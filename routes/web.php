@@ -20,7 +20,7 @@ Route::get('/authors/{user}', [PostController::class, 'index'])
 Route::get('/promoted', [PostController::class, 'index'])
     ->name('promoted')->defaults('promoted', true);
 
-Route::post('/comment', [CommentController::class, 'store'])
+Route::post('/posts/{post}/comment', [CommentController::class, 'store'])
     ->name('comment');
 
 Route::delete('/comment/{comment}', [CommentController::class, 'delete'])

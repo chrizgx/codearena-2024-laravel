@@ -8,8 +8,10 @@ use App\Models\Post;
 
 class CommentController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, Post $post)
     {
+        $request->merge(['post_id' => $post->id]);
+
         $request->validate([
             'name' => 'required|string|max:32',
             'body' => 'required|string',
