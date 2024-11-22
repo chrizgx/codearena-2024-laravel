@@ -402,4 +402,59 @@ class BlogTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Pagination', false);
     }
+
+    public function testUserCanReplyToComment()
+    {
+        $user = User::factory()->create();
+        $post = Post::factory()->create([
+            'user_id' => $user->id,
+            'published_at' => now(),
+        ]);
+
+        $comment = $post->comments()->create([
+            'name' => 'John Doe',
+            'body' => 'This is a comment.',
+        ]);
+
+        $response = $this->followingRedirects()
+            ->post(route('comment', $post), [
+                'name' => 'Jane Doe',
+                'body' => 'This is a reply.',
+                'parent_id' => $comment->id,
+            ]);
+
+        $response->assertSee('This is a reply.')
+            ->assertSee('Jane Doe');
+    }
+
+    public function testUserCanReplyToReply()
+    {
+        $user = User::factory()->create();
+        $post = Post::factory()->create([
+            'user_id' => $user->id,
+            'published_at' => now(),
+        ]);
+
+        $comment = $post->comments()->create([
+            'name' => 'John Doe',
+            'body' => 'This is a comment.',
+        ]);
+
+        $reply = $post->comments()->create([
+            'name' => 'Jane Doe',
+            'body' => 'This is a reply.',
+            'parent_id' => $comment->id,
+        ]);
+
+        $response = $this->followingRedirects()
+            ->post(route('comment', $post), [
+                'name' => 'Alice Doe',
+                'body' => 'This is a reply to a reply.',
+                'parent_id' => $comment->id,
+                'reference_id' => $reply->id,
+            ]);
+
+        $response->assertSee('This is a reply to a reply.')
+            ->assertSee('Alice Doe');
+    }
 }
