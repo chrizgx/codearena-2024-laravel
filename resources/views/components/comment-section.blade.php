@@ -54,12 +54,12 @@
         <p class="mt-8 mx-auto text-center text-gray-500">Be the first to comment...</p>
     @endif
 
-    <form id="reply-template" class="mt-3 hidden" action="{{ route('comment', ['post' => $post->id]) }}" method="POST">
+    <form id="reply-template" class="p-1 reply-form" action="{{ route('comment', ['post' => $post->id]) }}" method="POST">
         @csrf
         <input type="hidden" name="parent_id" value=""> <!-- dynamically set by js -> value = $comment->id -->
         <input type="hidden" name="reference_id" value="">
         <input type="text" name="name" placeholder="Name..." class="w-full p-2 pl-4 border border-gray-200 rounded-xl" required>
-        <textarea name="body" class="w-full p-4 mt-2 border border-gray-200 rounded-xl" placeholder="Add a comment..." required></textarea>
+        <textarea name="body" class="w-full max-h-52 p-4 mt-2 border border-gray-200 rounded-xl" placeholder="Add a comment..." required></textarea>
         <button type="submit" class="mt-4 px-6 py-2 text-white bg-gradient-to-r from-purple-start to-purple-end rounded-xl">Post Reply</button>
         <button type="cancel" class="mt-4 px-6 py-2 text-white bg-gradient-to-r from-red-500 to-red-400 rounded-xl">Cancel</button>
     </form>
@@ -68,18 +68,34 @@
         <form id="comment-form" action="{{ route('comment', ['post' => $post->id]) }}" method="POST">
             @csrf
             <input type="text" id="name" required name="name" placeholder="Name..." class="w-full p-2 pl-4 border border-gray-200 rounded-xl">
-            <textarea name="body" id="body" required class="w-full p-4 mt-2 border border-gray-200 rounded-xl" placeholder="Add a comment..."></textarea>
+            <textarea name="body" id="body" required class="w-full max-h-80 p-4 mt-2 border border-gray-200 rounded-xl" placeholder="Add a comment..."></textarea>
             <button type="submit" class="mt-4 px-6 py-2 text-white bg-gradient-to-r from-purple-start to-purple-end rounded-xl">Post Comment</button>
         </form>
     </div>
 </div>
+<style>
+    .reply-form {
+        max-height: 0;
+        overflow-y: hidden;
+        opacity: 0;
+        transition: max-height 0.5s linear, opacity 0.7s linear;
+    }
+
+    .reply-form.show {
+        max-height: 500px;
+        opacity: 1;
+    }
+</style>
 <script>
     function showReplyForm(commentId, referenceId) {
         // If form already exists in current comment, do nothing
         if (document.getElementById(`reply-form-${referenceId}`)) return;
 
         const form = document.getElementById('reply-template').cloneNode(true);
-        form.style.display = 'block';
+        // form.style.display = 'block';
+        setTimeout(() => {
+            form.classList.add('show');
+        }, 10);
         form.id = 'reply-form-' + referenceId;
 
         // Set up cancel button to hide the correct form
@@ -96,6 +112,7 @@
 
     function hideReplyForm(commentId) {
         const form = document.getElementById(`reply-form-${commentId}`);
-        form.remove();
+        form.classList.remove('show');
+        setTimeout(() => form.remove(), 550);
     }
 </script>
