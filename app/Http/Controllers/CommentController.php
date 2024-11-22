@@ -25,10 +25,23 @@ class CommentController extends Controller
         if (!$post->isPublished())  {
             abort(404, 'Post not found or not published');
         }
+
         // Spam check if comment already exists
-        $spam = Comment::where('post_id', $request->post_id)
+        $spam = false;
+        
+        if ($request->parent_id === null) {
+            // If comment is first level, check for first level duplicates
+            $spam = Comment::where('post_id', $request->post_id)
+            ->where('parent_id', null)
             ->where('body', $request->body)
             ->exists();
+        } else {
+            // If comment is a reply, check for duplicates that belong to the same parent comment
+            $spam = Comment::where('post_id', $request->post_id)
+            ->where('parent_id', $request->parent_id)
+            ->where('body', $request->body)
+            ->exists();
+        }
         
         if ($spam) {
             abort(403, 'Duplicate comment');
