@@ -20,6 +20,9 @@
                     </div>
                     <p class="sm:ml-12 text-gray-700 font-light">{{$comment->body}}</p>
 
+                    <!-- Exist to be targetted by 'reply' button of a TOP LEVEL COMMENT -->
+                    <div id="comment-{{$comment->id}}"></div>
+
                     @if(count($comment->replies) > 0)
                         @foreach ($comment->replies as $reply)
                             <div id="reply-{{$reply->id}}"  class="group p-2 sm:ml-9 my-4 bg-transparent from-purple-transparent-start to-purple-transparent-end target:bg-gradient-to-r rounded-3xl">
@@ -44,23 +47,23 @@
                             </div>
                         @endforeach
                     @endif
-
-                    <form id="reply-{{$comment->id}}" class="mt-3 hidden" action="{{ route('comment') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="post_id" value="{{ $post->id }}">
-                        <input type="hidden" name="parent_id" value="{{ $comment->id }}">
-                        <input type="hidden" name="reference_id" value="">
-                        <input type="text" name="name" placeholder="Name..." class="w-full p-2 pl-4 border border-gray-200 rounded-xl" required>
-                        <textarea name="body" class="w-full p-4 mt-2 border border-gray-200 rounded-xl" placeholder="Add a comment..." required></textarea>
-                        <button type="submit" class="mt-4 px-6 py-2 text-white bg-gradient-to-r from-purple-start to-purple-end rounded-xl">Post Reply</button>
-                        <button class="mt-4 px-6 py-2 text-white bg-gradient-to-r from-red-500 to-red-400 rounded-xl" onclick="hideReplyForm({{$comment->id}})">Cancel</button>
-                    </form>
                 </div>
             @endforeach
         </div>
     @else
         <p class="mt-8 mx-auto text-center text-gray-500">Be the first to comment...</p>
     @endif
+
+    <form id="reply-template" class="mt-3 hidden" action="{{ route('comment') }}" method="POST">
+        @csrf
+        <input type="hidden" name="post_id" value=""> <!-- dynamically set by js -> value = $post->id -->
+        <input type="hidden" name="parent_id" value=""> <!-- dynamically set by js -> value = $comment->id -->
+        <input type="hidden" name="reference_id" value="">
+        <input type="text" name="name" placeholder="Name..." class="w-full p-2 pl-4 border border-gray-200 rounded-xl" required>
+        <textarea name="body" class="w-full p-4 mt-2 border border-gray-200 rounded-xl" placeholder="Add a comment..." required></textarea>
+        <button type="submit" class="mt-4 px-6 py-2 text-white bg-gradient-to-r from-purple-start to-purple-end rounded-xl">Post Reply</button>
+        <button type="cancel" class="mt-4 px-6 py-2 text-white bg-gradient-to-r from-red-500 to-red-400 rounded-xl">Cancel</button>
+    </form>
 
     <div>
         <form id="comment-form" action="{{ route('comment') }}" method="POST">
@@ -74,13 +77,28 @@
 </div>
 <script>
     function showReplyForm(commentId, referenceId) {
-        const form = document.getElementById(`reply-${commentId}`);
+        // If form already exists in current comment, do nothing
+        if (document.getElementById(`reply-form-${referenceId}`)) return;
+
+        const form = document.getElementById('reply-template').cloneNode(true);
         form.style.display = 'block';
+        form.id = 'reply-form-' + referenceId;
+
+        // Set up cancel button to hide the correct form
+        form.querySelector('button[type="cancel"]').onclick = () => hideReplyForm(referenceId);
+
+        // Set up form data
+        form.querySelector('input[name="post_id"]').value = {{$post->id}};
+        form.querySelector('input[name="parent_id"]').value = commentId;
         form.querySelector('input[name="reference_id"]').value = referenceId;
+
+        // Display form
+        const commentElement = (commentId != referenceId) ? document.getElementById(`reply-${referenceId}`) : document.getElementById(`comment-${commentId}`);
+        commentElement.appendChild(form);
     }
 
     function hideReplyForm(commentId) {
-        const form = document.getElementById(`reply-${commentId}`);
-        form.style.display = 'none';
+        const form = document.getElementById(`reply-form-${commentId}`);
+        form.remove();
     }
 </script>
