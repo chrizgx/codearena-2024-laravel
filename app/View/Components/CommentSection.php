@@ -20,7 +20,8 @@ class CommentSection extends Component
     
     public function __construct(Collection $comments, Post $post)
     {
-        $this->comments = $comments->sortByDesc('created_at');
+        // Provide only top-level comments
+        $this->comments = $comments->whereNull('parent_id')->sortByDesc('created_at');
         $this->post = $post;
     }
 
