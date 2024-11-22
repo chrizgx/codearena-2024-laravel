@@ -14,6 +14,8 @@ class CommentController extends Controller
             'name' => 'required|string|max:32',
             'body' => 'required|string',
             'post_id' => 'required|exists:posts,id',
+            'parent_id' => 'nullable|exists:comments,id',
+            'reference_id' => 'nullable|exists:comments,id',
         ]);
 
         $request->merge(['created_at' => now()]);
@@ -31,7 +33,30 @@ class CommentController extends Controller
         if ($spam) {
             abort(403, 'Duplicate comment');
         };
+
+        // Further checks for replies
+        if ($request->parent_id) {
+            $parent = Comment::find($request->parent_id);
+            if (!$parent) {
+                abort(404, 'Parent comment not found');
+            }
+            if ($parent->post_id != $request->post_id) {
+                abort(403, 'Parent comment does not belong to this post');
+            }
+        }
         
+        //  If reference_id is null or equal to parent_id, set it to parent_id with no further checks
+        if ($request->parent_id && ( $request->reference_id === null || $request->reference_id === $request->parend_id ) ) {
+            $request->reference_id = $request->parent_id;
+        } elseif ($request->parent_id && $request->reference_id) {
+            $reference = Comment::find($request->reference_id);
+            if (!$reference) {
+                abort(404, 'Reference comment not found');
+            }
+            if ($reference->post_id != $request->post_id) {
+                abort(403, 'Reference comment does not belong to this post');
+            }
+        }
 
         // Save comment
         $comment = Comment::create($request->all());
